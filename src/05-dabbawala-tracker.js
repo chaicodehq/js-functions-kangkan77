@@ -50,4 +50,82 @@
  */
 export function createDabbawala(name, area) {
   // Your code here
+  let deliveries = [];
+  let nextId = 1;
+
+  return {
+    addDelivery: function (from, to) {
+      if (!from || !to || from.trim() === "" || to.trim() === "") {
+        return -1;
+      }
+
+      let newDelivery = {
+        id: nextId,
+        from: from,
+        to: to,
+        status: "pending"
+      };
+
+      deliveries.push(newDelivery);
+      let currentId = nextId;
+      nextId = nextId + 1;
+      return currentId;
+    },
+
+    completeDelivery: function (id) {
+      for (let delivery of deliveries) {
+        if (delivery.id === id) {
+          if (delivery.status === "pending") {
+            delivery.status = "completed";
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
+      return false;
+    },
+
+    getActiveDeliveries: function () {
+      let pendingOnes = [];
+      for (let d of deliveries) {
+        if (d.status === "pending") {
+          pendingOnes.push({ ...d });
+        }
+      }
+      return pendingOnes;
+    },
+
+    getStats: function () {
+      let total = deliveries.length;
+      let completedCount = 0;
+
+      for (let d of deliveries) {
+        if (d.status === "completed") {
+          completedCount++;
+        }
+      }
+
+      let pendingCount = total - completedCount;
+      let rate = 0;
+      if (total > 0) {
+        rate = (completedCount / total) * 100;
+      }
+
+      return {
+        name: name,
+        area: area,
+        total: total,
+        completed: completedCount,
+        pending: pendingCount,
+        successRate: rate.toFixed(2) + "%"
+      };
+    },
+
+    reset: function () {
+      deliveries = [];
+      nextId = 1;
+      return true;
+    }
+  };
 }

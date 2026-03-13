@@ -55,20 +55,91 @@
  */
 export function mixColors(color1, color2) {
   // Your code here
+  if (!color1 || !color2 || typeof color1.r !== "number" || typeof color2.r !== "number") {
+    return null;
+  }
+
+  return {
+    name: color1.name + "-" + color2.name,
+    r: Math.round((color1.r + color2.r) / 2),
+    g: Math.round((color1.g + color2.g) / 2),
+    b: Math.round((color1.b + color2.b) / 2)
+  };
 }
+
 
 export function adjustBrightness(color, factor) {
   // Your code here
+  if (!color || typeof factor !== "number") {
+    return null;
+  }
+
+  let newR = Math.round(color.r * factor);
+  let newG = Math.round(color.g * factor);
+  let newB = Math.round(color.b * factor);
+
+
+  newR = Math.max(0, Math.min(255, newR));
+  newG = Math.max(0, Math.min(255, newG));
+  newB = Math.max(0, Math.min(255, newB));
+
+  return {
+    name: color.name,
+    r: newR,
+    g: newG,
+    b: newB
+  };
 }
+
 
 export function addToPalette(palette, color) {
   // Your code here
+  if (!Array.isArray(palette)) {
+    return color ? [color] : [];
+  }
+  if (!color) {
+    return [...palette];
+  }
+
+  return [...palette, color];
 }
+
 
 export function removeFromPalette(palette, colorName) {
   // Your code here
+  if (!Array.isArray(palette)) {
+    return [];
+  }
+
+  let newPalette = [];
+  for (let c of palette) {
+    if (c.name !== colorName) {
+      newPalette.push(c);
+    }
+  }
+  return newPalette;
 }
+
 
 export function mergePalettes(palette1, palette2) {
   // Your code here
+  let p1 = Array.isArray(palette1) ? palette1 : [];
+  let p2 = Array.isArray(palette2) ? palette2 : [];
+
+  let result = [...p1];
+
+  for (let c2 of p2) {
+    let exists = false;
+    for (let c1 of result) {
+      if (c1.name === c2.name) {
+        exists = true;
+        break;
+      }
+    }
+    if (!exists) {
+      result.push(c2);
+    }
+  }
+
+  return result;
 }

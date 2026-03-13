@@ -46,12 +46,80 @@
  */
 export function createDialogueWriter(genre) {
   // Your code here
+  // 1st way
+  if (!["action", "romance", "comedy", "drama"].includes(genre)) {
+    return null;
+  }
+  return function (hero, villain) {
+    if (!hero || typeof hero !== "string" || hero.trim() === "") return "..."
+    if (!villain || typeof villain !== "string" || villain.trim() === "") return "..."
+
+    if (genre === "action") {
+      return `${hero} says: 'Tujhe toh main dekh lunga, ${villain}!'`
+    } else if (genre === "romance") {
+      return `${hero} whispers: '${villain}, tum mere liye sab kuch ho'`
+    } else if (genre === "comedy") {
+      return `${hero} laughs: '${villain} bhai, kya kar rahe ho yaar!'`
+    } else if (genre === "drama") {
+      return `${hero} cries: '${villain}, tune mera sab kuch cheen liya!'`
+    }
+
+  }
+
+  // 2nd way
+
+  //  const templates = {
+  //   action: (hero, villain) => `${hero} says: 'Tujhe toh main dekh lunga, ${villain}!'`,
+  //   romance: (hero, villain) => `${hero} whispers: '${villain}, tum mere liye sab kuch ho'`,
+  //   comedy: (hero, villain) => `${hero} laughs: '${villain} bhai, kya kar rahe ho yaar!'`,
+  //   drama: (hero, villain) => `${hero} cries: '${villain}, tune mera sab kuch cheen liya!'`
+  // };
+
+  // if (!templates[genre]) return null;
+
+  // return function (hero, villain) {
+  //   if (!hero || !villain) return "...";
+  //   return templates[genre](hero, villain);
+  // };
+
 }
 
 export function createTicketPricer(basePrice) {
   // Your code here
+  if (typeof basePrice !== "number" || basePrice <= 0) return null;
+
+  const multipliers = {
+    silver: 1,
+    gold: 1.5,
+    platinum: 2
+  };
+
+  return function (seatType, isWeekend = false) {
+    if (!multipliers[seatType]) return null;
+
+    let price = basePrice * multipliers[seatType];
+
+    if (isWeekend) {
+      price *= 1.3;
+    }
+
+    return Math.round(price);
+  };
 }
 
 export function createRatingCalculator(weights) {
   // Your code here
+  if (typeof weights !== "object" || weights === null) return null;
+
+  return function (scores) {
+    let total = 0;
+
+    for (const key in weights) {
+      if (scores[key] !== undefined) {
+        total += scores[key] * weights[key];
+      }
+    }
+
+    return Number(total.toFixed(1));
+  };
 }

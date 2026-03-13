@@ -50,4 +50,83 @@
  */
 export function createFestivalManager() {
   // Your code here
+  let festivals = [];
+
+  return {
+    addFestival: function (name, date, type) {
+      const validTypes = ["religious", "national", "cultural"];
+
+      if (!name || typeof name !== "string" || name.trim() === "") return -1;
+      if (typeof date !== "string") return -1;
+      if (!validTypes.includes(type)) return -1;
+
+      for (let f of festivals) {
+        if (f.name === name) return -1;
+      }
+
+      festivals.push({
+        name: name,
+        date: date,
+        type: type
+      });
+
+      return festivals.length;
+    },
+
+    removeFestival: function (name) {
+      let index = -1;
+      for (let i = 0; i < festivals.length; i++) {
+        if (festivals[i].name === name) {
+          index = i;
+          break;
+        }
+      }
+
+      if (index !== -1) {
+        festivals.splice(index, 1);
+        return true;
+      }
+      return false;
+    },
+
+    getAll: function () {
+      let copy = [];
+      for (let f of festivals) {
+        copy.push({ ...f });
+      }
+      return copy;
+    },
+
+    getByType: function (type) {
+      let filtered = [];
+      for (let f of festivals) {
+        if (f.type === type) {
+          filtered.push({ ...f });
+        }
+      }
+      return filtered;
+    },
+
+    getUpcoming: function (currentDate, n = 3) {
+      let upcoming = [];
+
+      for (let f of festivals) {
+        if (f.date >= currentDate) {
+          upcoming.push({ ...f });
+        }
+      }
+
+      upcoming.sort(function (a, b) {
+        if (a.date < b.date) return -1;
+        if (a.date > b.date) return 1;
+        return 0;
+      });
+
+      return upcoming.slice(0, n);
+    },
+
+    getCount: function () {
+      return festivals.length;
+    }
+  };
 }

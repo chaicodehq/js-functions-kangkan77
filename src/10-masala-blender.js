@@ -54,28 +54,79 @@
  */
 export function pipe(...fns) {
   // Your code here
+  if (fns.length === 0) {
+    return function (x) { return x; };
+  }
+
+  return function (input) {
+    let currentResult = input;
+    for (let fn of fns) {
+      if (typeof fn === "function") {
+        currentResult = fn(currentResult);
+      }
+    }
+    return currentResult;
+  };
 }
+
 
 export function compose(...fns) {
   // Your code here
+  if (fns.length === 0) {
+    return function (x) { return x; };
+  }
+
+  return function (input) {
+    let currentResult = input;
+    for (let i = fns.length - 1; i >= 0; i--) {
+      let fn = fns[i];
+      if (typeof fn === "function") {
+        currentResult = fn(currentResult);
+      }
+    }
+    return currentResult;
+  };
 }
+
 
 export function grind(spice) {
   // Your code here
+  return { ...spice, form: "powder" };
 }
+
 
 export function roast(spice) {
   // Your code here
+  return { ...spice, roasted: true, aroma: "strong" };
 }
+
 
 export function mix(spice) {
   // Your code here
+  return { ...spice, mixed: true };
 }
+
 
 export function pack(spice) {
   // Your code here
+  return { ...spice, packed: true, label: spice.name + " Masala" };
 }
+
 
 export function createRecipe(steps) {
   // Your code here
+  if (!Array.isArray(steps) || steps.length === 0) {
+    return function (x) { return x; };
+  }
+
+  let functionList = [];
+
+  for (let stepName of steps) {
+    if (stepName === "grind") functionList.push(grind);
+    else if (stepName === "roast") functionList.push(roast);
+    else if (stepName === "mix") functionList.push(mix);
+    else if (stepName === "pack") functionList.push(pack);
+  }
+
+  return pipe(...functionList);
 }
